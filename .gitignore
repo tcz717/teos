@@ -1,3 +1,7 @@
 /tools
 /objs
 /bin
+/isodir
+*.dblite
+*.o
+*.iso
