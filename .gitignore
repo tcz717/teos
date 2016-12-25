@@ -2,6 +2,7 @@
 /objs
 /bin
 /isodir
+/sysroot
 *.dblite
 *.o
 *.iso

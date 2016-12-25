@@ -1,3 +1,7 @@
 {
-    "python.linting.pylintEnabled": false
+    "python.linting.pylintEnabled": false,
+    "extensions.autoUpdate": true,
+    "licenser.license": "GPLv3",
+    "licenser.author": "tcz717",
+    "licenser.projectName": "teos"
 }
