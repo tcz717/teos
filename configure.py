@@ -13,23 +13,8 @@
 # GNU General Public License for more details.
 # 
 # You should have received a copy of the GNU General Public License
-# along with teos.  If not, see <http://www.gnu.crg/licenses/>.
+# along with teos.  If not, see <http://www.gnu.org/licenses/>.
 # 
 
-Import("env")
-
-kernal_arch_c=Split("""
-boot.S
-gdt.c
-idt.c
-interrupt-entry.S
-interrupt.c
-pic.c
-tty.c
-crti.S
-crtn.S
-debug.c
-""")
-kernal_arch=env.Object(kernal_arch_c)
-
-Return('kernal_arch')
+c_defines = [
+]

@@ -3,6 +3,9 @@
 /bin
 /isodir
 /sysroot
+/output
+
 *.dblite
 *.o
 *.iso
+*.pyc

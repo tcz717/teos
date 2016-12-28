@@ -4,9 +4,14 @@
 #include <string.h>
 
 #include <kernel/vga.h>
+#include <kernel/portio.h>
+
+#define TAB_LENGTH	8
 
 size_t terminal_row;
 size_t terminal_column;
+size_t terminal_curser_x;
+size_t terminal_curser_y;
 uint8_t terminal_color;
 uint16_t* terminal_buffer;
 
@@ -24,6 +29,23 @@ void terminal_initialize(void)
 			terminal_buffer[index] = make_vgaentry(' ', terminal_color);
 		}
 	}
+}
+
+void terminal_setcurser(size_t x, size_t y)
+{
+	const size_t index = y * VGA_WIDTH + x;
+	outport8(0x3d4,14);
+	outport8(0x3d5,(index >> 8) & 0xff);
+	outport8(0x3d4,15);
+	outport8(0x3d5,index & 0xff);
+
+	terminal_curser_x = x;
+	terminal_curser_y = y;
+}
+
+void terminal_updatecurser()
+{
+	terminal_setcurser(terminal_column, terminal_row);
 }
 
 void terminal_setcolor(uint8_t color)
@@ -62,6 +84,12 @@ void terminal_putchar(char c)
 		terminal_newline();
 	else if ( c == '\r' )
 		terminal_column = 0;
+	else if ( c == '\t')
+	{
+		uint16_t padding = TAB_LENGTH - terminal_column % TAB_LENGTH;
+		for(int i = 0; i < padding; i++)
+			terminal_putchar(' ');
+	}
 	else
 	{
 		if ( terminal_column == VGA_WIDTH )

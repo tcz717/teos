@@ -15,20 +15,22 @@
 # You should have received a copy of the GNU General Public License
 # along with teos.  If not, see <http://www.gnu.org/licenses/>.
 # 
-
+import configure
 i686=Environment(
     CC='./tools/bin/i686-elf-gcc',
     AS='./tools/bin/i686-elf-as',
     AR='./tools/bin/i686-elf-ar',
     CCFLAGS=Split('-std=gnu99 -O2 -Wall -Wextra -g -fno-tree-scev-cprop'),
-    CPPPATH=['#src/libc/include','#src/kernel/include'],
+    CPPPATH=['#src/libc/include','#src/kernel/include','#./'],
     ASFLAGS='',
     LINKFLAGS='-T src/kernel/arch/$ARCH/linker.ld -nostdlib -fbuiltin',
     ARCH='i386',
-    CPPDEFINES=['__HAS_NO_CRT_INIT'],
+    CPPDEFINES=['__HAS_NO_CRT_INIT','DEBUG'],
 )
+env=i686
+env.Append(CPPDEFINES=configure.c_defines)
 
-Export(env=i686)
+Export('env')
 
 kernal_objs = SConscript("src/kernel/SConscript",variant_dir="objs", duplicate=0)
 libc = SConscript("src/libc/SConscript",
