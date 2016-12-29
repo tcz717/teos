@@ -7,6 +7,13 @@
 
 #include <stdint.h>
 
+#define outb 	outport8
+#define outw 	outport16
+#define outl 	outport32
+#define inb 	inport8
+#define inw 	inport16
+#define inl 	inport32
+
 __attribute__((unused))
 static inline uint8_t outport8(uint16_t port, uint8_t value)
 {

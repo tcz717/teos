@@ -29,6 +29,7 @@ tty.c
 crti.S
 crtn.S
 debug.c
+serial.c
 """)
 kernal_arch=env.Object(kernal_arch_c)
 

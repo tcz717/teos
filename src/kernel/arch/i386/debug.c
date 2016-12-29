@@ -23,11 +23,11 @@
 
 void print_gdt()
 {
-    printf("base\tlimit\t\access\tgranu\n");
-    printf("total:%d\n", gdt_size);
+    tprintf("base\t\tlimit\t\taccess\t\tgranu\n");
+    tprintf("total:\t%d\n", gdt_size);
     for(int i = 0;i < gdt_size; i++)
     {
-        printf("%x\t%x\t%x\t%x\n",
+        tprintf("%x\t%x\t\t%x\t\t%x\n",
             GDT_BASE(gdt[i]),
             GDT_LIMIT(gdt[i]),
             GDT_ACCESS(gdt[i]),

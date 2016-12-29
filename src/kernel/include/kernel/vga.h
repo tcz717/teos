@@ -39,6 +39,6 @@ static inline uint16_t make_vgaentry(char c, uint8_t color)
 static const size_t VGA_WIDTH = 80;
 static const size_t VGA_HEIGHT = 25;
 
-static uint16_t* const VGA_MEMORY = (uint16_t*) (0xB8000 + TEOS_KERNEL_BASE);
+static uint32_t* const VGA_MEMORY = (uint32_t*) (0xB8000 + TEOS_KERNEL_BASE);
 
 #endif

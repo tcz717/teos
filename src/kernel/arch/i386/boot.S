@@ -108,7 +108,11 @@ _start:
 	ltr %cx
 
 	# Initialize the core kernel before running the global constructors.
+	pushl %ebx #  Push the pointer to the Multiboot information structure
+	pushl %eax #  Push the magic value
 	call kernel_early
+	popl %ebx
+	popl %eax
 
 	# Call the global constructors.
 	call _init

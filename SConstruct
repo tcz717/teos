@@ -32,6 +32,7 @@ env.Append(CPPDEFINES=configure.c_defines)
 
 Export('env')
 
+#kernel and lib build
 kernal_objs = SConscript("src/kernel/SConscript",variant_dir="objs", duplicate=0)
 libc = SConscript("src/libc/SConscript",
     variant_dir="objs/libc",
@@ -43,8 +44,15 @@ libk = SConscript("src/libc/SConscript",
     exports={'is_kernel':True},
     duplicate=0,
 )
-kernel = i686.Program("objs/teos.kernel",kernal_objs,LIBS=[libk,'gcc'])
+# libgcc depend must be the last
+kernel = env.Program("objs/teos.kernel",kernal_objs,LIBS=[libk,'gcc'])
 
-i686.Install('isodir/boot/',kernel)
-i686.Install("isodir/boot/grub/","grub.cfg")
-i686.Command("./teos.iso","isodir","grub-mkrescue -o $TARGET isodir")
+# make iso
+env.Install('isodir/boot/',kernel)
+env.Install("isodir/boot/grub/","grub.cfg")
+env.Command("output/teos.iso","isodir","grub-mkrescue -o $TARGET isodir")
+
+# install
+env.Install('output/',kernel)
+env.Install('output/',libc)
+env.Install('output/',libk)
