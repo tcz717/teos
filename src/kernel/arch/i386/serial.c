@@ -36,7 +36,7 @@ void serial_init(uint32_t base, uint32_t baud_rate)
     outb(base + 3, 0x03);               // 8 bits, no parity, one stop bit
     outb(base + 2, 0xC7);               // Enable FIFO, clear them, with 14-byte threshold
     outb(base + 4, 0x0B);               // IRQs enabled, RTS/DSR set
-}
+}   
 
 uint8_t serial_transmit_empty(uint32_t base)
 {
@@ -48,4 +48,16 @@ void serial_write(uint32_t base, char c)
     while (serial_transmit_empty(base) == 0);
     
     outb(base,c);
+}
+
+uint8_t serial_received(uint32_t base) 
+{
+   return inb(base + 5) & 1;
+}
+
+uint8_t serial_read(uint32_t base) 
+{
+   while (serial_received(base) == 0);
+   
+   return inb(base);
 }

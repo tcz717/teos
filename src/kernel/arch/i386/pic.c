@@ -20,6 +20,7 @@ const uint8_t PIC_MODE_SFNM = 0x10; // Special fully nested (not)
 const uint8_t PIC_READ_IRR = 0x0A;
 const uint8_t PIC_READ_ISR = 0x0B;
 
+//读取所有发生了的中断(rasied)
 uint16_t pic_read_irr()
 {
 	outport8(PIC_MASTER + PIC_COMMAND, PIC_READ_IRR);
@@ -28,6 +29,7 @@ uint16_t pic_read_irr()
 	       inport8(PIC_SLAVE  + PIC_COMMAND) << 8;
 }
 
+//读取正在使用的中断(serviced)
 uint16_t pic_read_isr()
 {
 	outport8(PIC_MASTER + PIC_COMMAND, PIC_READ_ISR);

@@ -18,7 +18,10 @@
         },
         {
             "name": "Win32",
-            "includePath": ["d:/teos/src/kernel/include"],
+            "includePath": [
+                "d:/teos/src/kernel/include",
+                "d:/teos/src/libc/include"
+            ],
             "browse" : {
                 "limitSymbolsToIncludedHeaders" : true,
                 "databaseFilename" : ""

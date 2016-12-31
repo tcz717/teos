@@ -9,6 +9,10 @@
 #include <teos.h>
 #include <multiboot.h>
 
+#ifdef TEOS_USING_GDB
+#include <kernel/gdb.h>
+#endif
+
 #if defined(__i386__)
 #include "../arch/i386/idt.h"
 #include "../arch/i386/pic.h"
@@ -39,6 +43,7 @@ void kernel_version(void)
     tprintf("Hello, teos!\n");
     tprintf("version:\t%s\n", version);
     tprintf("build date:\t%s\n", build_date);
+    tprintf("kernel size:\t0x%X\n", &kernel_end - &kernel_begin);
     tprintf("-----------------------------------------\n");
 }
 
@@ -139,6 +144,11 @@ void kernel_main(void)
     pic_initialize();
 #endif
 
-    tprintf("-----gdt table-----\n");
     print_gdt();
+
+#ifdef TEOS_USING_GDB
+    tprintf("initializing gdb ...\n");
+    gdb_init();
+    tprintf("gdb online.\n");
+#endif
 }

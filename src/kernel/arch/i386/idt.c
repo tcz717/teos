@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "idt.h"
+#include "kernel/interrupt.h"
 
 #define IDT_TYPE_INTERRUPT 0xE /* Interrupts disabled in eflags. */
 #define IDT_TYPE_TRAP 0xF      /* Interrupts unaffected in eflags. */
@@ -44,6 +45,30 @@ void idt_format_normal_entry(struct idt_entry* entry,
 	               rpl << IDT_FLAG_DPL_SHIFT |
 	               type << IDT_FLAG_TYPE_SHIFT;
 	entry->handler_high = (uintptr_t) handler >> 16 & 0xFFFF;
+}
+
+void im_configure_int(uint8_t id, uint8_t type)
+{
+	typedef void (*handler)(void);
+	uintptr_t old_handler = (idt[id].handler_low) | 
+							((idt[id].handler_high & 0xFFFF) << 16);
+	switch (type)
+	{
+	case IM_TYPE_KERNEL_INTR:
+		idt_format_normal_entry(&idt[id], (handler)old_handler, IDT_TYPE_INTERRUPT, 0x0);
+		break;
+	case IM_TYPE_KERNEL_TRAP:
+		idt_format_normal_entry(&idt[id], (handler)old_handler, IDT_TYPE_TRAP, 0x0);
+		break;
+	case IM_TYPE_INTR:
+		idt_format_normal_entry(&idt[id], (handler)old_handler, IDT_TYPE_INTERRUPT, 0x3);
+		break;
+	case IM_TYPE_TRAP:
+		idt_format_normal_entry(&idt[id], (handler)old_handler, IDT_TYPE_TRAP, 0x3);
+		break;
+	default:
+		break;
+	}
 }
 
 void idt_initialize()
