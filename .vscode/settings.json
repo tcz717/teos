@@ -3,5 +3,13 @@
     "extensions.autoUpdate": true,
     "licenser.license": "GPLv3",
     "licenser.author": "tcz717",
-    "licenser.projectName": "teos"
+    "licenser.projectName": "teos",
+    "files.exclude": {
+        "**/*.pyc": true,
+        "**/*.dblite":true
+    },
+    "files.associations": {
+        "SConstruct": "python",
+        "SConscript": "python"
+    }
 }

@@ -16,7 +16,11 @@
 # along with teos.  If not, see <http://www.gnu.crg/licenses/>.
 # 
 
-Import("env")
+Import("env debug")
+env = env.Clone()
+
+if 'gdb' in debug:
+    env.Append(CPPDEFINES='DEBUG_GDB')
 
 src=Glob('*.c')
 objs=env.Object(src)

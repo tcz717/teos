@@ -18,3 +18,7 @@
 
 c_defines = [
 ]
+
+debug =[
+    # 'gdb'
+]

@@ -25,6 +25,6 @@ enum GDB_REGISTER {
 };
 
 void gdb_init();
-void gdb_main(uint32_t regs[GDB_CPU_I386_REG_NUM]);
+void gdb_main(uint32_t regs[GDB_CPU_I386_REG_NUM], uint8_t sig);
 
 #endif /* GDB_H */

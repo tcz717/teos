@@ -8,6 +8,8 @@ MPC_NAME=mpc-1.0.3
 MPC_URL=ftp://ftp.gnu.org/gnu/mpc/mpc-1.0.3.tar.gz
 BINUTILS_NAME=binutils-2.27
 BINUTILS_URL=http://ftp.gnu.org/gnu/binutils/$BINUTILS_NAME.tar.bz2
+GDB_NAME=gdb-7.12
+GDB_URL=http://ftp.gnu.org/gnu/gdb/gdb-7.12.tar.xz
 TOOLS=$(pwd)/tools
 
 if [ ! -d "$TOOLS" ]; then
@@ -47,6 +49,12 @@ if [ ! -d "$BINUTILS_NAME" ]; then
     fi
     tar xvf $BINUTILS_NAME.tar.bz2
 fi
+if [ ! -d "$GDB_NAME" ]; then
+    if [ ! -f "$GDB_NAME.tar.xz" ]; then
+        wget $GDB_URL -P $TOOLS/src
+    fi
+    tar xvf $GDB_NAME.tar.xz
+fi
 
 export PREFIX=$TOOLS
 export TARGET=i686-elf
@@ -78,6 +86,17 @@ if [ ! -d "build-gcc" ]; then
     make install-target-libgcc
     popd
 fi
+
+if [ ! -d "build-gdb" ]; then
+    mkdir build-gdb
+    pushd build-gdb
+    ../$GDB_NAME/configure --target=$TARGET --prefix="$PREFIX" --disable-nls --disable-werror
+    make
+    make install
+    popd
+fi
+
+
 
 popd
 # # #Using the new Compiler 

@@ -361,7 +361,7 @@ int gdb_recv_packet(char *pkt_buf, size_t pkt_buf_len, size_t *pkt_len)
 			if (gdb_is_printable_char(pkt_buf[p])) {
 				printd("%c", pkt_buf[p]);
 			} else {
-				printd("\\x%02x", pkt_buf[p] & 0xff);
+				printd("\\x%x ", pkt_buf[p] & 0xff);
 			}
 		}
 		printd("\n");
@@ -415,7 +415,7 @@ int gdb_send_packet(const char *pkt_data, size_t pkt_len)
 			if (gdb_is_printable_char(pkt_data[p])) {
 				printd("%c", pkt_data[p]);
 			} else {
-				printd("\\x%02x", pkt_data[p]&0xff);
+				printd("\\x%x ", pkt_data[p]&0xff);
 			}
 		}
 		printd("\n");
@@ -615,7 +615,7 @@ int gdb_mem_write(const char *buf, size_t buf_len, uint32_t addr, size_t len, gd
 	return 0;
 }
 
-void gdb_main(uint32_t regs[GDB_CPU_I386_REG_NUM])
+void gdb_main(uint32_t regs[GDB_CPU_I386_REG_NUM], uint8_t sig)
 {
     uint32_t        addr;
 	int             status;
@@ -624,7 +624,7 @@ void gdb_main(uint32_t regs[GDB_CPU_I386_REG_NUM])
 	const char   *ptr_next;
     char         pkt_buf[256];
 
-	gdb_send_signal_packet(pkt_buf, sizeof(pkt_buf), 0);
+	gdb_send_signal_packet(pkt_buf, sizeof(pkt_buf), sig);
 
     while (1) {
 		/* Receive the next packet */
@@ -818,7 +818,7 @@ void gdb_main(uint32_t regs[GDB_CPU_I386_REG_NUM])
 			return;
 
 		case '?':
-			gdb_send_signal_packet(pkt_buf, sizeof(pkt_buf), 0);
+			gdb_send_signal_packet(pkt_buf, sizeof(pkt_buf), sig);
 			break;
 
 		/*

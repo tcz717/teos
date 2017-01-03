@@ -23,6 +23,10 @@
 #include <kernel/interrupt.h>
 #include <kernel/debug.h>
 
+#ifdef __i386__
+#include "../arch/i386/cpu.h"
+#endif
+
 static struct int_handler
 {
     int_callback callback;
@@ -45,6 +49,12 @@ void im_on_isr(uint8_t id,struct interrupt_context* int_ctx)
     {
         tprintf("ERROR: unregistered isr 0x%x\n",id);
         dump_context(int_ctx);
+#ifdef xTEOS_USING_GDB
+        if(isr_handlers[IM_ISR_BREAKPOINT].callback != TEOS_NULL)
+        {
+            isr_handlers[IM_ISR_BREAKPOINT].callback(int_ctx);
+        }
+#endif
         asm("hlt");
     }
 }

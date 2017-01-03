@@ -23,13 +23,14 @@ i686=Environment(
     CCFLAGS=Split('-std=gnu99 -O2 -Wall -Wextra -g -fno-tree-scev-cprop'),
     CPPPATH=['#src/libc/include','#src/kernel/include','#./'],
     ASFLAGS='',
-    LINKFLAGS='-T src/kernel/arch/$ARCH/linker.ld -nostdlib -fbuiltin',
+    LINKFLAGS='-T src/kernel/arch/$ARCH/linker.ld -nostdlib -fbuiltin -Wl,-Map,output/teos.map',
     ARCH='i386',
     CPPDEFINES=['__HAS_NO_CRT_INIT','DEBUG'],
 )
 env=i686
 env.Append(CPPDEFINES=configure.c_defines)
 
+Export(debug = configure.debug)
 Export('env')
 
 #kernel and lib build
