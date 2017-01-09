@@ -1,5 +1,5 @@
 # 自制操作系统TEOS
-## TEOS: Educated purpose opreating system with POSIX compatiable
+*TEOS: Educated purpose opreating system with POSIX compatiable*
 
 Build Requirement:
 ============
@@ -16,7 +16,7 @@ You can install the requirements automatically by running `./setup.sh`.
 Architech:
 ===========
 i686 is the main considered target. 
-After finishing most componentt, I will consider add ARM support.
+After finishing most components, I will consider add ARM support.
 
 Todo List:
 ==========
@@ -25,7 +25,7 @@ Todo List:
 - [x] Intertupt Setup
 - [x] GDB Stub
 - [ ] Memory Management
-- [ ] VFT
+- [ ] VFS
 - [ ] Kernel Module and Drive
 - [ ] Process
 - [ ] User Program Loader
