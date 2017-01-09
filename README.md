@@ -30,6 +30,7 @@ Todo List:
 - [ ] Process
 - [ ] User Program Loader
 - [ ] Adapt Libc (and maybe python)
-- [ ] (Consider Python as the shell)
-- [ ] (Add net support)
+- [ ] \(Consider Python as the shell\)
+- [ ] \(Add net support\)
+
 *Continuing...*
