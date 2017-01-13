@@ -46,9 +46,7 @@ int gdb_sys_putchar(int ch)
 }
 int gdb_sys_mem_readb(uint32_t addr, uint8_t *val)
 {
-	if(addr <= TEOS_KERNEL_BASE || addr > (uint32_t)&kernel_end)
-		return TEOS_EOF;
-    *val = *(volatile uint8_t *)addr;
+	*val = *(volatile uint8_t *)addr;
 	return 0;
 }
 int gdb_sys_mem_writeb(uint32_t addr, uint8_t val)

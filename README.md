@@ -3,11 +3,8 @@
 
 Build Requirement:
 ============
+* binutils-2.27
 * gcc-6.2.0
-* gmp-6.1.1
-* mpfr-3.1.5
-* mpc-1.0.3
-* automake-1.15
 * scons
 * gdb-7.12 (optional)
 

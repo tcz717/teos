@@ -19,14 +19,24 @@
 // 
 
 #include <stdint.h>
-#define PAGE_IDENT_END  0xC0400000
+#include <teos.h>
+
+#define PAGE_IDENT_END  0xC0040000
 
 #define PAGE_DIR_ENTRY_DEFAULT  0x00000003
+#define PAGE_DIR_ENTRY_KERNEL   0x00000003
+
 #define PAGE_TAB_ENTRY_DEFAULT  0x00000003
+#define PAGE_TAB_ENTRY_KERNEL   0x00000003
 
-#define PAGE_DIR                ((page_dir_entry_t *)0xFFC00000)
-#define PAGE_SELF               ((page_tab_entry_t *)0xFFFFE000)
+#define PAGE_PER_TAB            1024
 
+#define PAGE_TABS               ((page_tab_t *)TEOS_KERNEL_PGT)
+#define PAGE_DIR                ((page_dir_entry_t *)(TEOS_KERNEL_PGT + (TEOS_KERNEL_BASE >> 12 << 2)))
+#define PAGE_SELF               ((page_tab_entry_t *)0xFFFFF000)
+
+#define page_get_dir_idx(vaddr) ((vaddr) >> 22)
+#define page_get_tab_idx(vaddr) (((vaddr) >> 12) & 0x3FF)
 #define page_flush(addr)        asm volatile("invlpg (%0)" ::"r" (addr) : "memory")
 
 union page_dir_entry
@@ -69,6 +79,10 @@ typedef union page_tab_entry page_tab_entry_t;
 typedef union page_dir_entry page_dir_entry_t;
 extern page_dir_entry_t BootPageDirectory[1024];
 
+typedef page_tab_entry_t page_tab_t[1024];
+
 void page_init_self();
+void page_make(uint32_t paddr, uint32_t vaddr, uint32_t model);
+void page_make_tab(uint32_t vaddr, uint32_t paddr, uint32_t model);
 
 #endif /* PAGE_H */

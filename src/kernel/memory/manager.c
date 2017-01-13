@@ -46,7 +46,7 @@ teos_err mm_init(multiboot_info_t *mbi)
              (unsigned long)mmap < mbi->mmap_addr + mbi->mmap_length + TEOS_KERNEL_BASE;
              mmap = (multiboot_memory_map_t *)((unsigned long)mmap + mmap->size + sizeof(mmap->size)))
         {
-            if (mmap->type != 0x01)
+            if (mmap->type != 0x01 && mmap->base_addr_low < max_addr)
             {
                 mm_phy_reserve(mmap->base_addr_low, mmap->length_low);
             }

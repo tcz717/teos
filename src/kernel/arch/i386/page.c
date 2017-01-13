@@ -23,51 +23,57 @@
 #include <teos.h>
 #include "page.h"
 
+#define SELF_TAB_MODEL  0x00000003
+
 page_tab_entry_t teos_align(4096) page_self_tab[1024];
 
-void page_make(page_dir_entry_t *pgd, uint32_t paddr, uint32_t vaddr, size_t size, uint32_t model)
+void page_make(uint32_t paddr, uint32_t vaddr, uint32_t model)
 {
     uint32_t src_page = paddr >> 12;
     uint32_t dst_page = vaddr >> 12;
 
-    for (size_t i=0; i<size; i++)
-    {
-        page_dir_entry_t *page_tab = pgd+(dst_page >> 10);
-        if (!page_tab->entry.present)
-        {
-            //若page table不存在则要初始化一个page table项
-            teos_bp();
-        }
-    }
+    page_dir_entry_t *page_tab = &PAGE_DIR[dst_page >> 10];
+    //若page table不存在 则代表调用有误
+    tassert(page_tab->entry.present, "Page table not exsist");
+
+    page_tab_entry_t *entry = &PAGE_TABS[dst_page >> 10][page_get_tab_idx(vaddr)];
+    entry->data = model;
+    entry->entry.addr = src_page;
+    page_flush(vaddr);
 }
 
-void page_make_tab(page_dir_entry_t *entry, uint32_t paddr, uint32_t model)
+void page_make_tab(uint32_t paddr, uint32_t vaddr, uint32_t model)
 {
-    entry->data=model;
-    entry->entry.addr=paddr>>12;
+    uint32_t idx = page_get_dir_idx(vaddr);
+    PAGE_DIR[idx].data = model;
+    PAGE_DIR[idx].entry.addr = paddr >> 12;
+
+    PAGE_SELF[idx].data = SELF_TAB_MODEL;
+    PAGE_SELF[idx].entry.addr = paddr >> 12;
+    page_flush(&PAGE_TABS[idx]);
 }
 
 void page_init_self()
 {
     //0xFFC00000到0xFFFFFFFF作为访问分页表的虚拟地址
-    BootPageDirectory[TEOS_KERNEL_PGT >> 22].data = PAGE_DIR_ENTRY_DEFAULT;
-    BootPageDirectory[TEOS_KERNEL_PGT >> 22].entry.addr =
+    BootPageDirectory[page_get_dir_idx(TEOS_KERNEL_PGT)].data = PAGE_DIR_ENTRY_DEFAULT;
+    BootPageDirectory[page_get_dir_idx(TEOS_KERNEL_PGT)].entry.addr =
         ((uint32_t)page_self_tab - TEOS_KERNEL_BASE) >> 12;
 
     //0xFFFFF000到0xFFFFFFFF是page_self_tab的虚拟地址
-    page_self_tab[TEOS_KERNEL_PGT >> 22].data = PAGE_TAB_ENTRY_DEFAULT;
-    page_self_tab[TEOS_KERNEL_PGT >> 22].entry.addr =
+    page_self_tab[page_get_dir_idx(TEOS_KERNEL_PGT)].data = PAGE_TAB_ENTRY_DEFAULT;
+    page_self_tab[page_get_dir_idx(TEOS_KERNEL_PGT)].entry.addr =
         ((uint32_t)page_self_tab - TEOS_KERNEL_BASE) >> 12;
     page_flush(PAGE_SELF);
 
-    //0xFFC00000到0xFFC01000是BootPageDirectory的虚拟地址
-    page_self_tab[0].data = PAGE_TAB_ENTRY_DEFAULT;
-    page_self_tab[0].entry.addr =
+    //0xFFF00000到0xFFF01000是BootPageDirectory的虚拟地址
+    page_self_tab[page_get_dir_idx(TEOS_KERNEL_BASE)].data = PAGE_TAB_ENTRY_DEFAULT;
+    page_self_tab[page_get_dir_idx(TEOS_KERNEL_BASE)].entry.addr =
         ((uint32_t)BootPageDirectory - TEOS_KERNEL_BASE) >> 12;
     page_flush(PAGE_DIR);
 
     //验证自映射是否成功
-    if(BootPageDirectory[TEOS_KERNEL_PGT >> 22].data !=
-       PAGE_DIR[TEOS_KERNEL_PGT >> 22].data)
+    if(BootPageDirectory[page_get_dir_idx(TEOS_KERNEL_PGT)].data !=
+       PAGE_DIR[page_get_dir_idx(TEOS_KERNEL_PGT)].data)
        printd("self map fail.\n");
 }

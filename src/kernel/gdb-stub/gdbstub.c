@@ -216,7 +216,7 @@ int gdb_dec_hex(const char *buf, size_t buf_len, char *data, size_t data_len)
 		tmp = gdb_get_val(*buf++, 16);
 		if (tmp == TEOS_EOF) {
 			/* Buffer contained junk. */
-			tassert(0);
+			tassert(0, "Buffer contained junk");
 			return TEOS_EOF;
 		}
 
@@ -226,7 +226,7 @@ int gdb_dec_hex(const char *buf, size_t buf_len, char *data, size_t data_len)
 		tmp = gdb_get_val(*buf++, 16);
 		if (tmp == TEOS_EOF) {
 			/* Buffer contained junk. */
-			tassert(0);
+			tassert(0, "Buffer contained junk");
 			return TEOS_EOF;
 		}
 		data[pos] |= tmp;
@@ -507,14 +507,14 @@ int gdb_enc_bin(char *buf, size_t buf_len, const char *data, size_t data_len)
 			data[data_pos] == '}' ||
 			data[data_pos] == '*') {
 			if (buf_pos+1 >= buf_len) {
-				tassert(0);
+				tassert(0, "Buffer overflow");
 				return TEOS_EOF;
 			}
 			buf[buf_pos++] = '}';
 			buf[buf_pos++] = data[data_pos] ^ 0x20;
 		} else {
 			if (buf_pos >= buf_len) {
-				tassert(0);
+				tassert(0, "Buffer overflow");
 				return TEOS_EOF;
 			}
 			buf[buf_pos++] = data[data_pos];
@@ -538,7 +538,7 @@ int gdb_dec_bin(const char *buf, size_t buf_len, char *data, size_t data_len)
 	for (buf_pos = 0, data_pos = 0; buf_pos < buf_len; buf_pos++) {
 		if (data_pos >= data_len) {
 			/* Output buffer overflow */
-			tassert(0);
+			tassert(0, "Output buffer overflow");
 			return TEOS_EOF;
 		}
 		if (buf[buf_pos] == '}') {
@@ -546,7 +546,7 @@ int gdb_dec_bin(const char *buf, size_t buf_len, char *data, size_t data_len)
 			if (buf_pos+1 >= buf_len) {
 				/* There's an escape character, but no escaped character
 				 * following the escape character. */
-				tassert(0);
+				tassert(0, "No escaped character");
 				return TEOS_EOF;
 			}
 			buf_pos += 1;

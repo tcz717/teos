@@ -18,5 +18,10 @@
 
 #include <teos.h>
 
+#define MM_FRAME_RESV       (1 << 0)
+
+#define MM_COMMEN_BASE      0x01000000 //16Mb
+#define MM_BOOT_END         (TEOS_KERNEL_BASE + 0x00400000) //4Mb
+
 teos_err mm_phy_init(uint32_t max_mem);
 teos_err mm_phy_reserve(uint32_t start, uint32_t len);

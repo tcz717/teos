@@ -22,8 +22,7 @@
 #include <string.h>
 #include <kernel/link.h>
 #include <../arch/i386/page.h>
-
-#define MM_FRAME_RESV       (1 << 0)
+#include "phy_mem.h"
 
 struct mm_frame
 {
@@ -58,7 +57,28 @@ teos_err mm_phy_init(uint32_t max_mem)
     if(ftable_end > PAGE_IDENT_END)
     {
         //若超过了初始自映射4M空间，则需要对超出部分额外映射
-        
+        uint32_t extra = teos_addralign((uint32_t)ftable_end - PAGE_IDENT_END, TEOS_PAGE_SIZE);
+        uint32_t pg_cnt = extra >> 12;
+        uint32_t tab_cnt = teos_addralign(pg_cnt, PAGE_PER_TAB) >> 10;
+
+        //映射page table
+        for(uint32_t i = 0; i < tab_cnt; i++)
+        {
+            page_make_tab(
+                MM_COMMEN_BASE + (i << 22), 
+                MM_BOOT_END + (i << 22),
+                PAGE_DIR_ENTRY_KERNEL
+            );
+        }
+        //映射page
+        for(uint32_t i = 0; i < pg_cnt; i++)
+        {
+            page_make(
+                MM_COMMEN_BASE + ((i + tab_cnt) << 12), 
+                MM_BOOT_END + (i << 12),
+                PAGE_TAB_ENTRY_KERNEL
+            );
+        }
     }
 
     teos_zeros(ftable_start, mm_frame_num * sizeof(struct mm_frame));

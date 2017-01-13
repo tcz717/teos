@@ -24,10 +24,10 @@
 
 void serial_init(uint32_t base, uint32_t baud_rate)
 {
-    tassert(baud_rate!=0);
+    tassert(baud_rate!=0, "Baud rate is zero");
     uint16_t div = 115200 / baud_rate;
-    tassert(div!=0);
-    tassert(base>TEOS_KERNEL_BASE);
+    tassert(div!=0, "Div is zero");
+    tassert(base>TEOS_KERNEL_BASE, "Base not in Kernel Space");
 
     outb(base + 1, 0x00);               // Disable all interrupts
     outb(base + 3, 0x80);               // Enable DLAB (set baud rate divisor)
