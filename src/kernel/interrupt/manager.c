@@ -49,7 +49,7 @@ void im_on_isr(uint8_t id,struct interrupt_context* int_ctx)
     {
         tprintf("ERROR: unregistered isr 0x%x\n",id);
         dump_context(int_ctx);
-#ifdef xTEOS_USING_GDB
+#ifdef TEOS_USING_GDB
         if(isr_handlers[IM_ISR_BREAKPOINT].callback != TEOS_NULL)
         {
             isr_handlers[IM_ISR_BREAKPOINT].callback(int_ctx);

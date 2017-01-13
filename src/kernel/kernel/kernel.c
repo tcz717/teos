@@ -3,11 +3,12 @@
 #include <string.h>
 #include <stdio.h>
 
+#include <teos.h>
+#include <multiboot.h>
 #include <kernel/serial.h>
 #include <kernel/tty.h>
 #include <kernel/debug.h>
-#include <teos.h>
-#include <multiboot.h>
+#include <kernel/memory.h>
 
 #ifdef TEOS_USING_GDB
 #include <kernel/gdb.h>
@@ -18,12 +19,9 @@
 #include "../arch/i386/pic.h"
 #endif
 
-const char version[] = TEOS_VERSION;
-const char build_date[] = __DATE__;
+const char teos_version[] = TEOS_VERSION;
+const char teos_build_date[] = __DATE__;
 
-
-#define CHECK_FLAG(flags,bit)   ((flags) & (1 << (bit)))
-#define CHECK_FLAG(flags,bit)   ((flags) & (1 << (bit)))
 multiboot_info_t *multiboot_info;
 void kernel_early(uint32_t magic, multiboot_info_t *multiboot)
 {
@@ -35,14 +33,14 @@ void kernel_early(uint32_t magic, multiboot_info_t *multiboot)
         tprintf("invaild magic %X\n", magic);
     }
     tprintf("multiboot info at 0x%X\n", multiboot);
-    multiboot_info = TEOS_ADDR2UPPER(multiboot,multiboot_info_t*);
+    multiboot_info = teos_addr2upper(multiboot,multiboot_info_t*);
 }
 
 void kernel_version(void)
 {
     tprintf("Hello, teos!\n");
-    tprintf("version:\t%s\n", version);
-    tprintf("build date:\t%s\n", build_date);
+    tprintf("teos_version:\t%s\n", teos_version);
+    tprintf("build date:\t%s\n", teos_build_date);
     tprintf("kernel size:\t0x%X\n", &kernel_end - &kernel_begin);
     tprintf("-----------------------------------------\n");
 }
@@ -64,7 +62,7 @@ void kernel_print_grub()
 
     /* Is the command line passed? */
     if (CHECK_FLAG(mbi->flags, 2))
-        tprintf("cmdline = %s\n", TEOS_ADDR2UPPER(mbi->cmdline,char *));
+        tprintf("cmdline = %s\n", teos_addr2upper(mbi->cmdline,char *));
 
     /* Are mods_* valid? */
     if (CHECK_FLAG(mbi->flags, 3))
@@ -74,13 +72,13 @@ void kernel_print_grub()
 
         tprintf("mods_count = %d, mods_addr = 0x%x\n",
                (int)mbi->mods_count, (int)mbi->mods_addr);
-        for (i = 0, mod = TEOS_ADDR2UPPER(mbi->mods_addr,multiboot_module_t *);
+        for (i = 0, mod = teos_addr2upper(mbi->mods_addr,multiboot_module_t *);
              i < mbi->mods_count;
              i++, mod++)
             tprintf(" mod_start = 0x%x, mod_end = 0x%x, cmdline = %s\n",
                    (unsigned)mod->mod_start,
                    (unsigned)mod->mod_end,
-                   TEOS_ADDR2UPPER(mod->cmdline,char *));
+                   teos_addr2upper(mod->cmdline,char *));
     }
 
     /* Bits 4 and 5 are mutually exclusive! */
@@ -120,7 +118,7 @@ void kernel_print_grub()
 
         tprintf("mmap_addr = 0x%x, mmap_length = 0x%x\n",
                (unsigned)mbi->mmap_addr, (unsigned)mbi->mmap_length);
-        for (mmap = TEOS_ADDR2UPPER(mbi->mmap_addr, multiboot_memory_map_t*);
+        for (mmap = teos_addr2upper(mbi->mmap_addr, multiboot_memory_map_t*);
              (unsigned long)mmap < mbi->mmap_addr + mbi->mmap_length + TEOS_KERNEL_BASE;
              mmap = (multiboot_memory_map_t *)((unsigned long)mmap + mmap->size + sizeof(mmap->size)))
             tprintf(" size = 0x%x, base_addr = 0x%x %x,"
@@ -144,6 +142,8 @@ void kernel_main(void)
     pic_initialize();
 #endif
 
+    im_init();
+
     print_gdt();
 
 #ifdef TEOS_USING_GDB
@@ -151,4 +151,6 @@ void kernel_main(void)
     gdb_init();
     tprintf("gdb online.\n");
 #endif
+
+    mm_init(multiboot_info);
 }

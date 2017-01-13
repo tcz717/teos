@@ -25,6 +25,7 @@ stack_top:
 .set KERNEL_PAGE_NUMBER, (KERNEL_BASE >> 22)
 .set _page_directory, BootPageDirectory-KERNEL_BASE
 BootPageDirectory:
+.global BootPageDirectory
     # This page directory entry identity-maps the first 4MB of the 32-bit physical address space.
     # All bits are clear except the following:
     # bit 7: PS The kernel page is 4MB.

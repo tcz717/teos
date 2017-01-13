@@ -90,7 +90,7 @@ fi
 if [ ! -d "build-gdb" ]; then
     mkdir build-gdb
     pushd build-gdb
-    ../$GDB_NAME/configure --target=$TARGET --prefix="$PREFIX" --disable-nls --disable-werror
+    ../$GDB_NAME/configure --target=$TARGET --prefix="$PREFIX" --disable-nls --disable-werror --enable-tui
     make
     make install
     popd

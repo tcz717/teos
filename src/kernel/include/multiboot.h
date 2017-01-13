@@ -118,6 +118,8 @@ unsigned long length_high;
 unsigned long type;
 } multiboot_memory_map_t;
 
+#define CHECK_FLAG(flags,bit)   ((flags) & (1 << (bit)))
+
 #endif /* ! ASM */
 
 #endif /* MULTIBOOT_H */

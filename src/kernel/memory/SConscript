@@ -17,21 +17,11 @@
 # 
 
 Import("env")
+env = env.Clone()
 
-kernal_arch_c=Split("""
-boot.S
-gdt.c
-idt.c
-interrupt-entry.S
-interrupt.c
-pic.c
-tty.c
-crti.S
-crtn.S
-debug.c
-serial.c
-page.c
-""")
-kernal_arch=env.Object(kernal_arch_c)
+env.Append(CPPPATH='.')
 
-Return('kernal_arch')
+src=Glob('*.c')
+objs=env.Object(src)
+
+Return('objs')

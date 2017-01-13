@@ -24,10 +24,15 @@ env.Append(
     CCFLAGS=['-ffreestanding','-fbuiltin'],
 )
 
+mods = Split("""
+    gdb-stub
+    interrupt
+    memory
+""")
+
 kernel_objs=SConscript(env.subst("arch/$ARCH/SConscript"),exports='env')
 kernel_objs.extend(env.Object('kernel/kernel.c'))
-kernel_objs.extend(SConscript("interrupt/SConscript",exports='env'))
-kernel_objs.extend(SConscript(dirs=["gdb-stub"], exports='env debug'))
+kernel_objs.extend(SConscript(dirs=mods, exports='env debug'))
 
 with os.popen(env.subst('../$CC -print-file-name=crtbegin.o')) as crtbegin:
     kernel_objs.append(File(crtbegin.read().strip('\n')))
