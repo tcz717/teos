@@ -153,4 +153,6 @@ void kernel_main(void)
 #endif
 
     mm_init(multiboot_info);
+
+    asm("int3");
 }

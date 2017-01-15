@@ -25,7 +25,8 @@
 
 #define SELF_TAB_MODEL  0x00000003
 
-page_tab_entry_t teos_align(4096) page_self_tab[1024];
+extern page_dir_t BootPageDirectory;
+page_tab_t teos_align(4096) page_self_tab;
 
 void page_make(uint32_t paddr, uint32_t vaddr, uint32_t model)
 {

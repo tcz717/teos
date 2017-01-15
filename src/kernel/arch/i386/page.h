@@ -77,9 +77,9 @@ union page_tab_entry
 };
 typedef union page_tab_entry page_tab_entry_t;
 typedef union page_dir_entry page_dir_entry_t;
-extern page_dir_entry_t BootPageDirectory[1024];
 
 typedef page_tab_entry_t page_tab_t[1024];
+typedef page_dir_entry_t page_dir_t[1024];
 
 void page_init_self();
 void page_make(uint32_t paddr, uint32_t vaddr, uint32_t model);

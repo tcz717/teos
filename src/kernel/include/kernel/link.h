@@ -20,15 +20,14 @@
 #ifndef LINK_H
 #define LINK_H
 
-#define lk_head(obj, target, type) \
-    (type)((obj)->(target).head)
-#define lk_next(obj, target) \
-    (__typeof__(obj))((obj)->(target).next)
-#define lk_insert(obj, target, ins)                 \
-    {                                               \
-        void *__next=(obj)->(target).next;          \
-        (obj)->(target).next=ins;                   \
-        (ins)->(target).next=(__typeof__(obj))__next;\
+#define lk_init(obj) \
+    (obj).head=&(obj)
+#define lk_insert(obj, ins)                     \
+    {                                           \
+        link_t *__next=(obj).next;              \
+        (obj).next=&ins;                        \
+        (ins).next=__next;                      \
+        (ins).head=(obj).head;                  \
     }
 
 struct teos_link{
