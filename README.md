@@ -1,5 +1,5 @@
 # 自制操作系统TEOS
-*TEOS: Educated purpose opreating system with POSIX compatiable*
+*TEOS: Learning purpose operating system with POSIX compatible*
 
 Build Requirement:
 ============
